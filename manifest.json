@@ -1,0 +1,26 @@
+{
+    "manifest_version" : 2,
+    "name" : "Show KA Program Flags",
+    "version" : "0.2.0",
+    "description" : "KA live flag count viewer",
+    "permissions": [
+        "activeTab",
+        "tabs",
+        "declarativeContent",
+        "https://www.khanacademy.org/*",
+        "storage"
+    ],
+    "icons": {
+        "128": "icons/128.png",
+        "48": "icons/48.png",
+        "32": "icons/32.png",
+        "16": "icons/16.png"
+    },
+    "content_scripts": [
+        {
+            "matches": ["https://www.khanacademy.org/*"],
+            "js": ["content.js"],
+            "css": ["content.css"]
+        }
+    ]
+}
