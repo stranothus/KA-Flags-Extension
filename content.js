@@ -84,6 +84,46 @@ function programFlags() {
     }
 }
 
+function postFlags() {
+    let id = window.location.href.split("/").reverse()[0].replace(/\D/g, "");
+
+    let timer = setInterval(() => {
+        let postsCont = document.getElementsByClassName("_3p5c27i");
+
+        if(postsCont.length) {
+            clearInterval(timer);
+            let observePosts = new MutationObserver(async () => {
+                let posts = document.querySelectorAll("._1t544yo9");
+                let tab = ["questions", "comments", "projectfeedback"][["Questions", "Tips & Thanks", "Help Requests"].indexOf(document.querySelector("._1jd6hj4p").textContent)];
+
+                if(posts.length) {
+                    let data = (await fetch("https://www.khanacademy.org/api/internal/discussions/scratchpad/" + id + "/" + tab + "?limit=" + posts.length).then(response => response.json())).feedback;
+
+                    if(tab !== "comments") {
+                        data = data.map(e => [e, ...e.answers]).flat(1);
+                    }
+
+                    posts.forEach(e => {
+                        let qa_expand_key = e.querySelectorAll("._dwmetq")[2].href.replace(/^[\S]+qa_expand_key=/, "");
+                        let flagModel = e.querySelector("._cjmzx82");
+
+                        let info = data.filter(e => e.expandKey === qa_expand_key)[0];
+
+                        let flags = info.flags;
+
+                        let element = document.createElement("span");
+                        element.classList.add("_nfki200");
+                        element.textContent = `(${flags.length} flags)`;
+
+                        flagModel.before(element);
+                    });
+                }
+            });
+            observePosts.observe(postsCont[0], { childList: true });
+        }
+    });
+}
+
 if(window.location.href.includes("/projects") || window.location.href.includes("/computer-programming")) {
     let observeList = new MutationObserver(setListFlags);
     let onLoad = window.setInterval(() => {
@@ -94,4 +134,5 @@ if(window.location.href.includes("/projects") || window.location.href.includes("
     }, 1);
     
     programFlags();
+    postFlags();
 }
