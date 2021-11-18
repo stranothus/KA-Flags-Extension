@@ -107,7 +107,7 @@ function postFlags() {
                         let links = e.querySelectorAll("._dwmetq");
                         if(!links.length) return;
                         let qa_expand_key = links[2].href.replace(/^[\S]+qa_expand_key=/, "");
-                        let flagModel = e.querySelector("._cjmzx82");
+                        let flagModel = e.querySelector("._cjmzx82") || e.querySelector("._1luo7lug");
                         if(!(flagModel.parentElement.textContent.indexOf("flags") + 1)) {
                             let info = data.filter(e => e.expandKey === qa_expand_key)[0];
 
@@ -133,7 +133,7 @@ function postFlags() {
                                 let links = e.querySelectorAll("._dwmetq");
                                 if(!links.length) return;
                                 let qa_expand_key = links[2].href.replace(/^[\S]+qa_expand_key=/, "");
-                                let flagModel = e.querySelector("._cjmzx82");
+                                let flagModel = e.querySelector("._cjmzx82") || e.querySelector("._1luo7lug");
                                 console.log(qa_expand_key, flagModel);
                                 if(flagModel.parentElement.textContent.indexOf("flags") + 1) return;
         
