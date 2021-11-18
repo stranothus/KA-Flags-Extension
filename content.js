@@ -44,7 +44,7 @@ function setListFlags(idk, observer) {
 }
 
 function programFlags() {
-    let id = window.location.href.split("/").reverse()[0].replace(/\D/g, "");
+    let id = window.location.href.split("/").reverse()[0].replace(/\?\S*/, "").replace(/\D/g, "");
 
     if(id) {
         fetch("https://www.khanacademy.org/api/internal/scratchpads/" + id)
@@ -85,7 +85,7 @@ function programFlags() {
 }
 
 function postFlags() {
-    let id = window.location.href.split("/").reverse()[0].replace(/\D/g, "");
+    let id = window.location.href.split("/").reverse()[0].replace(/\?\S*/, "").replace(/\D/g, "");
 
     let timer = setInterval(() => {
         let postsCont = document.getElementsByClassName("_3p5c27i");
@@ -103,23 +103,55 @@ function postFlags() {
                         data = data.map(e => [e, ...e.answers]).flat(1);
                     }
 
-                    posts.forEach(e => {
-                        let qa_expand_key = e.querySelectorAll("._dwmetq")[2].href.replace(/^[\S]+qa_expand_key=/, "");
+                    posts.forEach(async e => {
+                        let links = e.querySelectorAll("._dwmetq");
+                        if(!links.length) return;
+                        let qa_expand_key = links[2].href.replace(/^[\S]+qa_expand_key=/, "");
                         let flagModel = e.querySelector("._cjmzx82");
+                        if(!(flagModel.parentElement.textContent.indexOf("flags") + 1)) {
+                            let info = data.filter(e => e.expandKey === qa_expand_key)[0];
 
-                        let info = data.filter(e => e.expandKey === qa_expand_key)[0];
+                            let flags = info.flags;
 
-                        let flags = info.flags;
+                            let element = document.createElement("span");
+                            element.classList.add("_nfki200");
+                            element.textContent = `(${flags.length} flags)`;
 
-                        let element = document.createElement("span");
-                        element.classList.add("_nfki200");
-                        element.textContent = `(${flags.length} flags)`;
+                            flagModel.before(element);
+                        }
 
-                        flagModel.before(element);
+                        let commentCont = e.querySelector("._144t4sy");
+                        if(!commentCont) return;
+                        let commentList = commentCont.querySelector("._1bjanhbe");
+                        if(!commentList) return;
+                        let comments = commentList.querySelectorAll("._1bjanhbe");
+
+                        if(comments.length) {
+                            let data = await fetch("https://www.khanacademy.org/api/internal/discussions/" + qa_expand_key + "/replies?limit=" + comments.length).then(response => response.json());
+
+                            comments.forEach(e => {
+                                let links = e.querySelectorAll("._dwmetq");
+                                if(!links.length) return;
+                                let qa_expand_key = links[2].href.replace(/^[\S]+qa_expand_key=/, "");
+                                let flagModel = e.querySelector("._cjmzx82");
+                                console.log(qa_expand_key, flagModel);
+                                if(flagModel.parentElement.textContent.indexOf("flags") + 1) return;
+        
+                                let info = data.filter(e => e.expandKey === qa_expand_key)[0];
+        
+                                let flags = info.flags;
+        
+                                let element = document.createElement("span");
+                                element.classList.add("_nfki200");
+                                element.textContent = `(${flags.length} flags)`;
+        
+                                flagModel.before(element);
+                            });
+                        }
                     });
                 }
             });
-            observePosts.observe(postsCont[0], { childList: true });
+            observePosts.observe(postsCont[0], { childList: true, subtree: true });
         }
     });
 }
@@ -132,7 +164,6 @@ if(window.location.href.includes("/projects") || window.location.href.includes("
             observeList.observe(document.getElementsByClassName("_xu2jcg")[1], { childList : true });
         }
     }, 1);
-    
     programFlags();
     postFlags();
 }
