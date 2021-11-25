@@ -116,6 +116,13 @@ function postFlags() {
                             let element = document.createElement("span");
                             element.classList.add("_nfki200");
                             element.textContent = `(${flags.length} flags)`;
+                            
+                            element.style.cursor = "pointer";
+
+                            element.onclick = () => {
+                                alert(JSON.stringify(flags, null, 4));
+                            };
+    
 
                             flagModel.before(element);
                         }
@@ -144,6 +151,12 @@ function postFlags() {
                                 let element = document.createElement("span");
                                 element.classList.add("_nfki200");
                                 element.textContent = `(${flags.length} flags)`;
+
+                                element.style.cursor = "pointer";
+
+                                element.onclick = () => {
+                                    alert(JSON.stringify(flags, null, 4));
+                                };
         
                                 flagModel.before(element);
                             });
