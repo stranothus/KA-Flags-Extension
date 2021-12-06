@@ -184,7 +184,7 @@ let spinOffs = window.setInterval(() => {
 
         let cont = document.getElementsByClassName("_xh1c4")[0];
         let observeSpins = new MutationObserver(() => {
-            if(document.getElementsByClassName("_15mgdios")[0].textContent.includes("Sping-Offs")) setListFlags();
+            if(document.getElementsByClassName("_15mgdios")[0].textContent.includes("Spin-offs")) setListFlags();
         });
         observeSpins.observe(cont, { childList : true });
     }
