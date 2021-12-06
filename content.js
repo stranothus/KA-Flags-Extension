@@ -1,6 +1,5 @@
 function setListFlags(idk, observer) {
     let onLoad = window.setInterval(() => {
-        console.log(true);
         var programs = document.getElementsByClassName("_eof4m4b");
 
         if(programs.length) {
@@ -169,14 +168,28 @@ function postFlags() {
     });
 }
 
-if(window.location.href.includes("/projects") || window.location.href.includes("/computer-programming")) {
-    let observeList = new MutationObserver(setListFlags);
-    let onLoad = window.setInterval(() => {
-        if(document.getElementsByClassName("_xu2jcg")[1]) {
-            window.clearInterval(onLoad);
-            observeList.observe(document.getElementsByClassName("_xu2jcg")[1], { childList : true });
-        }
-    }, 1);
-    programFlags();
-    postFlags();
-}
+let observeList = new MutationObserver(setListFlags);
+let onLoad = window.setInterval(() => {
+    if(document.getElementsByClassName("_xu2jcg")[1]) {
+        window.clearInterval(onLoad);
+        observeList.observe(document.getElementsByClassName("_xu2jcg")[1], { childList : true });
+    }
+}, 1);
+
+let spinOffs = window.setInterval(() => {
+    let tabs = document.getElementsByClassName("_1sv27e6");
+
+    if(tabs.length) {
+        window.clearInterval(spinOffs);
+
+        let cont = document.getElementsByClassName("_xh1c4")[0];
+        let observeSpins = new MutationObserver(() => {
+            if(document.getElementsByClassName("_15mgdios")[0].textContent.includes("Sping-Offs")) setListFlags();
+        });
+        observeSpins.observe(cont, { childList : true });
+    }
+}, 1);
+
+programFlags();
+
+postFlags();
